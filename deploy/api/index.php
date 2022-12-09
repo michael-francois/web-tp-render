@@ -99,12 +99,17 @@ $app->get('/api/offers', function (Request $request, Response $response, $args) 
     $query = $request->getQueryParams();
     $q = $query['q'] ?? "";
 
-    // filter offers
-    $filteredOffers = array_filter($offers, function($offer) use ($q) {
-        return stripos($offer['name'], $q) !== false;
-    });
+    if ($q != "") {
+        // filter offers
+        $filteredOffers = array_filter($offers, function($offer) use ($q) {
+            return stripos($offer['name'], $q) !== false;
+        });
+        $response->getBody()->write(json_encode($filteredOffers));
+    }
+    else {
+        $response->getBody()->write(json_encode($offers));
+    }
 
-    $response->getBody()->write(json_encode($filteredOffers));
     return $response;
 });
 
