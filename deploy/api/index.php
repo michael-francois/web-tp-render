@@ -99,16 +99,15 @@ $app->get('/api/offers', function (Request $request, Response $response, $args) 
     $query = $request->getQueryParams();
     $q = $query['q'] ?? "";
 
-    if ($q != "") {
-        // filter offers
-        $filteredOffers = array_filter($offers, function($offer) use ($q) {
-            return stripos($offer['name'], $q) !== false;
-        });
-        $response->getBody()->write(json_encode($filteredOffers));
+    // Filter offers by name with for each loop
+    $filteredOffers = [];
+    foreach ($offers as $offer) {
+        if (strpos($offer['name'], $q) !== false) {
+            $filteredOffers[] = $offer;
+        }
     }
-    else {
-        $response->getBody()->write(json_encode($offers));
-    }
+
+    $response->getBody()->write(json_encode($filteredOffers));
 
     return $response;
 });
